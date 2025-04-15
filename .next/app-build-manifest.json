@@ -1,0 +1,40 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-659dd8e5a4d93377.js",
+      "static/chunks/4bd1b696-1c3a68a4064ca012.js",
+      "static/chunks/684-2d24429854d45810.js",
+      "static/chunks/main-app-87c00c8f42807a96.js",
+      "static/chunks/app/_not-found/page-64545bdeee4ce380.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-659dd8e5a4d93377.js",
+      "static/chunks/4bd1b696-1c3a68a4064ca012.js",
+      "static/chunks/684-2d24429854d45810.js",
+      "static/chunks/main-app-87c00c8f42807a96.js",
+      "static/css/ee89936d71a19979.css",
+      "static/chunks/app/layout-e2eb0b931c5fdf15.js"
+    ],
+    "/calculate/page": [
+      "static/chunks/webpack-659dd8e5a4d93377.js",
+      "static/chunks/4bd1b696-1c3a68a4064ca012.js",
+      "static/chunks/684-2d24429854d45810.js",
+      "static/chunks/main-app-87c00c8f42807a96.js",
+      "static/chunks/app/calculate/page-54f49d39425494d5.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-659dd8e5a4d93377.js",
+      "static/chunks/4bd1b696-1c3a68a4064ca012.js",
+      "static/chunks/684-2d24429854d45810.js",
+      "static/chunks/main-app-87c00c8f42807a96.js",
+      "static/chunks/app/page-93ea8a9a3a445715.js"
+    ],
+    "/weapon/page": [
+      "static/chunks/webpack-659dd8e5a4d93377.js",
+      "static/chunks/4bd1b696-1c3a68a4064ca012.js",
+      "static/chunks/684-2d24429854d45810.js",
+      "static/chunks/main-app-87c00c8f42807a96.js",
+      "static/chunks/app/weapon/page-8d0c58d4fe8a9800.js"
+    ]
+  }
+}

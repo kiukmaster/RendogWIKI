@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-      <div className="relative"> {/* 두개를 하나로 묶는 컨테이너 */}
+      <div className="relative">
           <div className="mt-10 text-center">
             <a href="/"><span className="text-sky-400 font-bold text-5xl">R</span><span className="text-orange-600 font-bold text-5xl">D</span> <span className="text-5xl text-white font-bold">WIKI</span></a>
           </div>

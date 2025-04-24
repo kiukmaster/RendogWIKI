@@ -1,5 +1,24 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  )
+  rgb(var(--background-start-rgb));
+}
 
 html {
     font-family: "Poetsen One", sans-serif;
@@ -35,7 +54,7 @@ html {
 }
 
 .questImg {
-    background-image: url('/none');
+    background-image: url('/npc.png');
     background-size: cover;
     background-position: center; 
     background-repeat: repeat-y;

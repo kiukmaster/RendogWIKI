@@ -19,7 +19,7 @@ export default function Home() {
         </div>
       </a>
       <a href="/cycle" className="w-50 h-50 mb-10" >
-        <div className="questImg text-center text-white">
+        <div className="cycle Img text-center text-white">
           <span className="text-black font-extrabold text-xl warpText">사이클 도우미(Beta)</span>
         </div>
       </a>

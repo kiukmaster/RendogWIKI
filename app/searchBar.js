@@ -15,10 +15,9 @@ export default function searchBar() {
     const router = useRouter();
   
     const searchList = [
-      { name: '강화석 계산기', link: '/calculate' },
       { name: '무기 도감', link: '/weapon' },
       { name: 'NPC & 퀘스트', link: '/quest' },
-      { name: '사이클 도우미', link: '/cycle' },
+      { name: '사이클 도우미', link: '/cycle' }
     ];
 
     useEffect(() => {

@@ -38,14 +38,7 @@ export default function Home() {
           </div>
 
           {/* 메뉴 섹션 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
-            <a href="/calculate" className="group">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:bg-gray-700/50 border border-gray-700/50">
-                <div className="calImg text-center text-white">
-                  <span className="text-white font-bold text-2xl group-hover:text-purple-400 transition-colors duration-300">강화석 계산기</span>
-                </div>
-              </div>
-            </a>
+          <div className="grid md:grid-cols-2 gap-8">
             <a href="/weapon" className="group">
               <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:bg-gray-700/50 border border-gray-700/50">
                 <div className="weaponImg text-center text-white">

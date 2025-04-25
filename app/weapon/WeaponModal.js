@@ -33,6 +33,7 @@ export default function WeaponModal({ weapon, isOpen, onClose }) {
               <div className="w-[200px] h-[200px] relative mb-4">
                 <img
                   src={`/무기/${weapon.type}/img/${weapon.name}.png`}
+                  loading="lazy" 
                   alt={weapon.name}
                   className="w-full h-full object-contain"
                   onError={(e) => {

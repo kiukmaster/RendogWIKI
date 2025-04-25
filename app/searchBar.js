@@ -1,11 +1,13 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
+import epicWeapons from '../public/무기/Epic/Epic.json';
 
 export default function searchBar() {
     const [query, setQuery] = useState('');
     const [filteredList, setFilteredList] = useState([]);
+    const [isWeaponPage, setIsWeaponPage] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
     const router = useRouter();
   
     const searchList = [
@@ -14,31 +16,100 @@ export default function searchBar() {
       { name: 'NPC & 퀘스트', link: '/quest' },
       { name: '사이클 도우미', link: '/cycle' },
     ];
-  
+
+    useEffect(() => {
+      const path = window.location.pathname;
+      setIsWeaponPage(path === '/weapon');
+    }, [router]);
+
     const handleInputChange = (e) => {
       const searchTerm = e.target.value;
       setQuery(searchTerm);
+      setSelectedIndex(-1); // 검색어가 변경될 때마다 선택 인덱스 초기화
   
-      // query와 일치하는 항목 필터링
       if (searchTerm) {
-        const filtered = searchList.filter(item =>
-          item.name.includes(searchTerm) // 검색어 포함된 항목 찾기
-        );
-        setFilteredList(filtered);
+        // 무기 검색 결과
+        const weaponResults = epicWeapons
+          .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(weapon => ({ ...weapon, type: 'weapon' }));
+
+        // 메뉴 검색 결과
+        const menuResults = searchList
+          .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(item => ({ ...item, type: 'menu' }));
+
+        // 검색 결과 통합
+        const combinedResults = [...weaponResults, ...menuResults];
+        setFilteredList(combinedResults);
       } else {
         setFilteredList([]);
       }
     };
+
+    const handleKeyDown = (e) => {
+      if (filteredList.length === 0) return;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedIndex(prev => 
+            prev < filteredList.length - 1 ? prev + 1 : prev
+          );
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedIndex(prev => 
+            prev > 0 ? prev - 1 : -1
+          );
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (selectedIndex >= 0 && selectedIndex < filteredList.length) {
+            handleSelectItem(filteredList[selectedIndex]);
+          } else if (filteredList.length > 0) {
+            // 엔터키를 눌렀을 때 정확히 일치하는 항목이 있으면 선택
+            const exactMatch = filteredList.find(item => 
+              item.name.toLowerCase() === query.toLowerCase()
+            );
+            if (exactMatch) {
+              handleSelectItem(exactMatch);
+            }
+          }
+          break;
+        case 'Escape':
+          setQuery('');
+          setFilteredList([]);
+          setSelectedIndex(-1);
+          break;
+      }
+    };
   
-    // 항목 클릭 시 해당 페이지로 이동
-    const handleSelectItem = (link) => {
-      router.push(link); // Next.js 페이지로 이동
-      setQuery(''); // 입력 필드 초기화
-      setFilteredList([]); // 드롭다운 초기화
+    const handleSelectItem = (item) => {
+      if (item.type === 'weapon') {
+        if (isWeaponPage) {
+          // 무기 도감 페이지에서는 무기 선택 시 해당 무기를 표시
+          const event = new CustomEvent('weaponSelected', { detail: item });
+          window.dispatchEvent(event);
+        } else {
+          // 다른 페이지에서는 무기 도감 페이지로 이동 후 무기 표시
+          router.push('/weapon');
+          // 페이지 이동 후 무기 선택 이벤트를 발생시키기 위해 약간의 지연을 둠
+          setTimeout(() => {
+            const event = new CustomEvent('weaponSelected', { detail: item });
+            window.dispatchEvent(event);
+          }, 100);
+        }
+      } else {
+        // 메뉴 항목 선택 시 해당 페이지로 이동
+        router.push(item.link);
+      }
+      setQuery('');
+      setFilteredList([]);
+      setSelectedIndex(-1);
     };
 
     return(
-        <form className="max-w-md mx-auto">
+        <form className="max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
             <div className="relative">
                 <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -49,10 +120,11 @@ export default function searchBar() {
                 type="search"
                 autoComplete="off"
                 id="default-search"
-                className="block w-full p-4 ps-10 text-sm text-black-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="디멘션블럭 : 어디로 가실래요?"
+                className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="디멘션 블럭 : 어디로 이동할까요?"
                 value={query}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 required
                 />
                 <button
@@ -64,19 +136,30 @@ export default function searchBar() {
 
                 {/* 드롭다운 결과 */}
                 {filteredList.length > 0 && (
-                <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-md">
+                <div className="absolute w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-md z-50">
                     {filteredList.map((item, index) => (
                     <div
                         key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleSelectItem(item.link)}
+                        className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center ${
+                            index === selectedIndex ? 'bg-gray-200 dark:bg-gray-600' : ''
+                        }`}
+                        onClick={() => handleSelectItem(item)}
                     >
-                        {item.name}
+                        {item.type === 'weapon' && (
+                            <img 
+                                src={`/무기/Epic/img/${item.name}.png`} 
+                                alt={item.name}
+                                className="w-6 h-6 mr-2"
+                            />
+                        )}
+                        <span className={`${item.type === 'weapon' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-900 dark:text-white'}`}>
+                            {item.name}
+                        </span>
                     </div>
                     ))}
                 </div>
                 )}
             </div>
         </form>
-        );
+    );
 };

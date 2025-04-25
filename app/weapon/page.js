@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WeaponModal from './WeaponModal';
 import epicWeapons from '../../public/무기/Epic/Epic.json';
 import Image from 'next/image';
@@ -7,6 +7,20 @@ import Image from 'next/image';
 export default function WeaponPage() {
   const [selectedWeapon, setSelectedWeapon] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [displayedWeapons, setDisplayedWeapons] = useState(epicWeapons);
+
+  useEffect(() => {
+    const handleWeaponSelected = (event) => {
+      setSelectedWeapon(event.detail);
+      setIsModalOpen(true);
+    };
+
+    window.addEventListener('weaponSelected', handleWeaponSelected);
+
+    return () => {
+      window.removeEventListener('weaponSelected', handleWeaponSelected);
+    };
+  }, []);
 
   const handleWeaponClick = (weapon) => {
     setSelectedWeapon(weapon);
@@ -16,8 +30,10 @@ export default function WeaponPage() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center">무기 도감</h1>
+      
+      {/* 무기 목록 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {epicWeapons.map((weapon) => (
+        {displayedWeapons.map((weapon) => (
           <div
             key={weapon.name}
             onClick={() => handleWeaponClick(weapon)}

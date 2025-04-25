@@ -4,23 +4,44 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Maplestory Bold';
+  src: url('/Maplestory Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
 :root {
-  --foreground-rgb: 255, 255, 255;
+  --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 17, 24, 39;
   --background-end-rgb: 31, 41, 55;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 17, 24, 39;
+    --background-end-rgb: 31, 41, 55;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+  min-height: 100vh;
+}
+
 html {
-    font-family: "Poetsen One", sans-serif;
+    font-family: "Maplestory Bold", sans-serif;
     font-weight: 400;
     font-style: normal;
-    background: linear-gradient(to bottom, rgb(var(--background-start-rgb)), rgb(var(--background-end-rgb)));
-    background-size: cover;
-    background-position: center; 
-    background-repeat: no-repeat; 
     text-align: center;
-    position: relative; 
-    min-height: 100vh; 
+    position: relative;
+    min-height: 100vh;
     color: rgb(var(--foreground-rgb));
 }
 

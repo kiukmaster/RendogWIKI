@@ -2,6 +2,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import epicWeapons from '../public/무기/Epic/Epic.json';
+import uniqueWeapons from '../public/무기/Unique/Unique.json';
+import legendWeapons from '../public/무기/Legend/Legend.json';
+import divineWeapons from '../public/무기/Divine/Divine.json';
+import superiorWeapons from '../public/무기/Superior/Superior.json';
 
 export default function searchBar() {
     const [query, setQuery] = useState('');
@@ -29,9 +33,25 @@ export default function searchBar() {
   
       if (searchTerm) {
         // 무기 검색 결과
-        const weaponResults = epicWeapons
+        const epicResults = epicWeapons
           .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
-          .map(weapon => ({ ...weapon, type: 'weapon' }));
+          .map(weapon => ({ ...weapon, type: 'Epic' }));
+
+        const uniqueResults = uniqueWeapons
+          .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(weapon => ({ ...weapon, type: 'Unique' }));
+
+        const legendResults = legendWeapons
+          .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(weapon => ({ ...weapon, type: 'Legend' }));
+
+        const divineResults = divineWeapons
+          .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(weapon => ({ ...weapon, type: 'Divine' }));
+
+        const superiorResults = superiorWeapons
+          .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(weapon => ({ ...weapon, type: 'Superior' }));
 
         // 메뉴 검색 결과
         const menuResults = searchList
@@ -39,7 +59,7 @@ export default function searchBar() {
           .map(item => ({ ...item, type: 'menu' }));
 
         // 검색 결과 통합
-        const combinedResults = [...weaponResults, ...menuResults];
+        const combinedResults = [...epicResults, ...uniqueResults, ...legendResults, ...divineResults, ...superiorResults, ...menuResults];
         setFilteredList(combinedResults);
       } else {
         setFilteredList([]);
@@ -85,20 +105,12 @@ export default function searchBar() {
     };
   
     const handleSelectItem = (item) => {
-      if (item.type === 'weapon') {
-        if (isWeaponPage) {
-          // 무기 도감 페이지에서는 무기 선택 시 해당 무기를 표시
-          const event = new CustomEvent('weaponSelected', { detail: item });
-          window.dispatchEvent(event);
-        } else {
-          // 다른 페이지에서는 무기 도감 페이지로 이동 후 무기 표시
-          router.push('/weapon');
-          // 페이지 이동 후 무기 선택 이벤트를 발생시키기 위해 약간의 지연을 둠
-          setTimeout(() => {
-            const event = new CustomEvent('weaponSelected', { detail: item });
-            window.dispatchEvent(event);
-          }, 100);
-        }
+      if (item.type !== 'menu') {
+        // 무기 선택 시 모달을 열기 위한 이벤트 발생
+        const event = new CustomEvent('weaponSelected', { detail: item });
+        window.dispatchEvent(event);
+        // 무기 도감 페이지로 이동
+        router.push(`/weapon?weapon=${encodeURIComponent(item.name)}&type=${item.type}`);
       } else {
         // 메뉴 항목 선택 시 해당 페이지로 이동
         router.push(item.link);
@@ -145,11 +157,11 @@ export default function searchBar() {
                         }`}
                         onClick={() => handleSelectItem(item)}
                     >
-                        {item.type === 'weapon' && (
+                        {item.type !== 'menu' && (
                             <img 
-                                src={`/무기/Epic/img/${item.name}.png`} 
+                                src={`/무기/${item.type}/img/${item.name}.png`} 
                                 alt={item.name}
-                                className="w-6 h-6 mr-2"
+                                className="w-8 h-8 mr-2 object-contain"
                             />
                         )}
                         <span className={`${item.type === 'weapon' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-900 dark:text-white'}`}>

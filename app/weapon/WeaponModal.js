@@ -9,6 +9,17 @@ export default function WeaponModal({ weapon, isOpen, onClose }) {
     }
   };
 
+  const getWeaponType = (weaponName) => {
+    if (weaponName.includes('Epic')) return 'Epic';
+    if (weaponName.includes('Unique')) return 'Unique';
+    if (weaponName.includes('Legend')) return 'Legend';
+    if (weaponName.includes('Divine')) return 'Divine';
+    if (weaponName.includes('Superior')) return 'Superior';
+    return 'Epic'; // 기본값
+  };
+
+  const weaponType = getWeaponType(weapon.name);
+
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4"
@@ -19,12 +30,18 @@ export default function WeaponModal({ weapon, isOpen, onClose }) {
           {/* 헤더 */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-6">
-              <div className="w-[120px] h-[120px] relative rounded-lg overflow-hidden border-2 border-gray-700 shadow-lg">
-                <Image
-                  src={`/무기/Epic/img/${weapon.name}.png`}
+              <div className="w-[200px] h-[200px] relative mb-4">
+                <img
+                  src={`/무기/${weapon.type}/img/${weapon.name}.png`}
                   alt={weapon.name}
-                  fill
-                  className="object-contain"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                      e.target.style.display = 'none';
+                      const fallbackDiv = document.createElement('div');
+                      fallbackDiv.className = 'w-full h-full flex items-center justify-center bg-gray-700';
+                      fallbackDiv.textContent = '이미지 없음';
+                      e.target.parentNode.appendChild(fallbackDiv);
+                  }}
                 />
               </div>
               <div>
@@ -55,11 +72,18 @@ export default function WeaponModal({ weapon, isOpen, onClose }) {
 
           {/* 비디오 */}
           <div className="mb-8">
-            <video 
-              src={`/무기/Epic/video/${weapon.name}.mp4`}
+            <video
+              src={`/무기/${weapon.type}/video/${weapon.name}.mp4`}
+              className="w-full rounded-lg"
               controls
               autoPlay
-              className="w-full rounded-lg shadow-lg"
+              onError={(e) => {
+                  e.target.style.display = 'none';
+                  const fallbackDiv = document.createElement('div');
+                  fallbackDiv.className = 'w-full h-64 flex items-center justify-center bg-gray-700 rounded-lg';
+                  fallbackDiv.textContent = '비디오 없음';
+                  e.target.parentNode.appendChild(fallbackDiv);
+              }}
             >
               브라우저가 비디오를 지원하지 않습니다.
             </video>
@@ -87,25 +111,21 @@ export default function WeaponModal({ weapon, isOpen, onClose }) {
 
           {/* 전투 데이터 */}
           <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
-            <h3 className="text-xl font-semibold mb-4 text-gray-200">강화 정보</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-200">데이터</h3>
             <div className="overflow-x-auto">
-              <table className="min-w-full">
+              <table className="w-full">
                 <thead>
-                  <tr>
+                  <tr className="text-gray-300">
                     {weapon.combatData.requiredInfo.map((info, index) => (
-                      <th key={index} className="px-4 py-3 text-left border-b border-gray-700 text-gray-300">
-                        {info}
-                      </th>
+                      <th key={index} className="px-4 py-2 text-left">{info}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {weapon.combatData.value.map((values, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-800'}>
-                      {values.map((value, valueIndex) => (
-                        <td key={valueIndex} className="px-4 py-3 text-gray-300">
-                          {value}
-                        </td>
+                  {weapon.combatData.value.map((row, rowIndex) => (
+                    <tr key={rowIndex} className="text-gray-300">
+                      {row.map((cell, cellIndex) => (
+                        <td key={cellIndex} className="px-4 py-2">{cell}</td>
                       ))}
                     </tr>
                   ))}

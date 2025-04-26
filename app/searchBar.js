@@ -6,6 +6,7 @@ import uniqueWeapons from '../public/무기/Unique/Unique.json';
 import legendWeapons from '../public/무기/Legend/Legend.json';
 import divineWeapons from '../public/무기/Divine/Divine.json';
 import superiorWeapons from '../public/무기/Superior/Superior.json';
+import classWeapons from '../public/무기/Class/Class.json';
 
 export default function searchBar() {
     const [query, setQuery] = useState('');
@@ -16,8 +17,7 @@ export default function searchBar() {
   
     const searchList = [
       { name: '무기 도감', link: '/weapon' },
-      { name: 'NPC & 퀘스트', link: '/quest' },
-      { name: '사이클 도우미', link: '/cycle' }
+      { name: 'NPC & 퀘스트', link: '/quest' }
     ];
 
     useEffect(() => {
@@ -52,13 +52,17 @@ export default function searchBar() {
           .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
           .map(weapon => ({ ...weapon, type: 'Superior' }));
 
+        const classResults = classWeapons
+          .filter(weapon => weapon.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(weapon => ({ ...weapon, type: 'Class' }));
+
         // 메뉴 검색 결과
         const menuResults = searchList
           .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
           .map(item => ({ ...item, type: 'menu' }));
 
         // 검색 결과 통합
-        const combinedResults = [...epicResults, ...uniqueResults, ...legendResults, ...divineResults, ...superiorResults, ...menuResults];
+        const combinedResults = [...epicResults, ...uniqueResults, ...legendResults, ...divineResults, ...superiorResults, ...classResults, ...menuResults];
         setFilteredList(combinedResults);
       } else {
         setFilteredList([]);

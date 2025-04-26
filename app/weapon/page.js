@@ -1,9 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import WeaponModal from './WeaponModal';
-import Image from 'next/image';
-
-import { useSearchParams } from 'next/navigation';
 
 export default function WeaponPage() {
   const [weaponSelected, setWeaponSelected] = useState(null);
@@ -35,12 +32,14 @@ export default function WeaponPage() {
         const legendResponse = await fetch('/무기/Legend/Legend.json');
         const divineResponse = await fetch('/무기/Divine/Divine.json');
         const superiorResponse = await fetch('/무기/Superior/Superior.json');
+        const classResponse = await fetch('/무기/Class/Class.json');
         
         const epicData = await epicResponse.json();
         const uniqueData = await uniqueResponse.json();
         const legendData = await legendResponse.json();
         const divineData = await divineResponse.json();
         const superiorData = await superiorResponse.json();
+        const classData = await classResponse.json();
         
         // 각 무기에 등급 정보 추가
         const weaponsWithType = [
@@ -48,7 +47,8 @@ export default function WeaponPage() {
           ...uniqueData.map(weapon => ({ ...weapon, type: 'Unique' })),
           ...legendData.map(weapon => ({ ...weapon, type: 'Legend' })),
           ...divineData.map(weapon => ({ ...weapon, type: 'Divine' })),
-          ...superiorData.map(weapon => ({ ...weapon, type: 'Superior' }))
+          ...superiorData.map(weapon => ({ ...weapon, type: 'Superior' })),
+          ...classData.map(weapon => ({ ...weapon, type: 'Class' }))
         ];
         
         setWeapons(weaponsWithType);
@@ -83,6 +83,7 @@ export default function WeaponPage() {
     if (weaponName.includes('Legend')) return 'Legend';
     if (weaponName.includes('Divine')) return 'Divine';
     if (weaponName.includes('Superior')) return 'Superior';
+    if (weaponName.includes('Class')) return 'Class';
     return 'Epic'; // 기본값
   };
 
